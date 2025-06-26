@@ -11,73 +11,34 @@ var systemThreadName = '${projectWorkspaceId}-system-thread-message-store'
 var entityStoreName = '${projectWorkspaceId}-agent-entity-store'
 
 // Reference to existing Cosmos DB account
-resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-12-01-preview' existing = {
   name: cosmosAccountName
+  scope: resourceGroup()
 }
 
 // Create the enterprise_memory database
-resource enterpriseMemoryDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-11-15' = {
+resource enterpriseMemoryDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-12-01-preview' existing = {
   parent: cosmosAccount
   name: 'enterprise_memory'
-  properties: {
-    resource: {
-      id: 'enterprise_memory'
-    }
-  }
 }
 
 // Create User Thread Container
-resource userThreadContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-11-15' = {
+resource userThreadContainer  'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-12-01-preview' existing = {
   parent: enterpriseMemoryDatabase
   name: userThreadName
-  properties: {
-    resource: {
-      id: userThreadName
-      partitionKey: {
-        paths: ['/id']
-        kind: 'Hash'
-      }
-    }
-    options: {
-      throughput: 400
-    }
-  }
 }
 
 // Create System Thread Container
-resource systemThreadContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-11-15' = {
+resource systemThreadContainer'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-12-01-preview' existing = {
   parent: enterpriseMemoryDatabase
   name: systemThreadName
-  properties: {
-    resource: {
-      id: systemThreadName
-      partitionKey: {
-        paths: ['/id']
-        kind: 'Hash'
-      }
-    }
-    options: {
-      throughput: 400
-    }
-  }
 }
 
+
 // Create Entity Store Container
-resource entityStoreContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-11-15' = {
+resource entityStoreContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-12-01-preview' existing = {
   parent: enterpriseMemoryDatabase
   name: entityStoreName
-  properties: {
-    resource: {
-      id: entityStoreName
-      partitionKey: {
-        paths: ['/id']
-        kind: 'Hash'
-      }
-    }
-    options: {
-      throughput: 400
-    }
-  }
 }
 
 var roleDefinitionId = resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosAccountName, '00000000-0000-0000-0000-000000000002')
