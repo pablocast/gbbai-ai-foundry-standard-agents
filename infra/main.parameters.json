@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "aiServices": {
+      "value": "foundy"
+    },
+    "firstProjectName": {
+      "value": "project"
+    },
+    "projectDescription": {
+      "value": "some description"
+    },
+    "displayName": {
+      "value": "project"
+    },
+    "models": {
+      "value": [
+        {
+          "name": "gpt-4o",
+          "format": "OpenAI",
+          "version": "2024-11-20",
+          "skuName": "GlobalStandard",
+          "capacity": 450
+        },
+        {
+          "name": "text-embedding-3-large",
+          "format": "OpenAI",
+          "version": "1",
+          "skuName": "Standard",
+          "capacity": 250
+        }
+      ]
+    },
+    "aiSearchResourceId": {
+      "value": ""
+    },
+    "azureStorageAccountResourceId": {
+      "value": ""
+    },
+    "azureCosmosDBAccountResourceId": {
+      "value": ""
+    },
+    "projectCapHost": {
+      "value": "caphostproj"
+    },
+    "accountCapHost": {
+      "value": "caphostacc"
+    }
+  }
+}
