@@ -2,5 +2,5 @@
 .vscode/
 .azure/
 .venv
-data/
+data/*
 !data/.gitkeep
