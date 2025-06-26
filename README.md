@@ -1,4 +1,4 @@
-# <img src="./utils/media/ai-foundry.png" alt="Azure Foundry" style="width:40px;height:40px;"/> AI Foundry Standard Agents
+# <img src="./utils/media/ai-foundry.png" alt="Azure Foundry" style="width:40px;height:40px;"/> Azure AI Foundry Standard Agents
 
 This project includes automated scripts to set up an Standard Azure AI Foundry Agent.
 
