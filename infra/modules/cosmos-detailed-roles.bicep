@@ -17,28 +17,68 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-12-01-preview
 }
 
 // Create the enterprise_memory database
-resource enterpriseMemoryDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-12-01-preview' existing = {
+resource enterpriseMemoryDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-12-01-preview' = {
   parent: cosmosAccount
   name: 'enterprise_memory'
+  properties: {
+    resource: {
+      id: 'enterprise_memory'
+    }
+  }
 }
 
 // Create User Thread Container
-resource userThreadContainer  'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-12-01-preview' existing = {
+resource userThreadContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-12-01-preview' = {
   parent: enterpriseMemoryDatabase
   name: userThreadName
+  properties: {
+    resource: {
+      id: userThreadName
+      partitionKey: {
+        paths: ['/id']
+        kind: 'Hash'
+      }
+    }
+    options: {
+      throughput: 400
+    }
+  }
 }
 
 // Create System Thread Container
-resource systemThreadContainer'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-12-01-preview' existing = {
+resource systemThreadContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-12-01-preview' = {
   parent: enterpriseMemoryDatabase
   name: systemThreadName
+  properties: {
+    resource: {
+      id: systemThreadName
+      partitionKey: {
+        paths: ['/id']
+        kind: 'Hash'
+      }
+    }
+    options: {
+      throughput: 400
+    }
+  }
 }
 
-
 // Create Entity Store Container
-resource entityStoreContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-12-01-preview' existing = {
+resource entityStoreContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-12-01-preview' = {
   parent: enterpriseMemoryDatabase
   name: entityStoreName
+  properties: {
+    resource: {
+      id: entityStoreName
+      partitionKey: {
+        paths: ['/id']
+        kind: 'Hash'
+      }
+    }
+    options: {
+      throughput: 400
+    }
+  }
 }
 
 var roleDefinitionId = resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosAccountName, '00000000-0000-0000-0000-000000000002')
@@ -86,4 +126,14 @@ resource entityStoreRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRol
   dependsOn: [
     entityStoreContainer
   ]
+}
+
+resource assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15' = {
+  name: guid(projectWorkspaceId, cosmosAccount.name, roleDefinitionId, projectPrincipalId)
+  parent: cosmosAccount
+  properties: {
+    principalId: projectPrincipalId
+    roleDefinitionId: roleDefinitionId
+    scope: cosmosAccount.id
+  }
 }

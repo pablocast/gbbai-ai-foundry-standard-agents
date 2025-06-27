@@ -58,6 +58,7 @@ resource cosmosDB 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = if (!cosm
     enableAutomaticFailover: false
     enableMultipleWriteLocations: false
     enableFreeTier: false
+    publicNetworkAccess:'Enabled'
     locations: [
       {
         locationName: location
